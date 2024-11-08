@@ -1,0 +1,115 @@
+.menu_child {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    /*box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);*/
+    padding: 10px;
+    list-style: none;
+    z-index: 1000;
+}
+
+/* Hiển thị menu khi hover vào mục "Chuyện nhà" */
+.nav-item:hover .menu_child {
+    display: flex;
+    width: 100%;
+
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style cho các mục con */
+.menu_child li {
+    padding: 5px 10px;
+}
+
+.menu_child a {
+    color: #333;
+    text-decoration: none;
+}
+
+.menu_child a:hover {
+    color: #007bff; /* Màu khi hover */
+}
+
+/* Căn chỉnh menu con cấp 3 */
+.menu_child_5_5 {
+    display: none;
+    position: absolute;
+    left: 100%;
+    top: 0;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+/* Hiển thị menu cấp 3 khi hover vào mục cấp 2 */
+/*.lv2_title:hover .menu_child_5_5 {*/
+/*    display: block;*/
+/*}*/
+
+.header_menu > ul > li .menu_child > li.lv2_title {
+    flex: 1;
+}
+ .menu_child > li {
+    padding: 12px 2.2%;
+    float: none;
+    display: block;
+}
+
+
+.menu_child > li > a {
+    color: #000;
+    border-bottom: 2px solid;
+    font-size: 16px;
+}
+.header_menu ul li a {
+    display: block;
+    color: #000;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 600;
+    font-family: 'SF Pro Text', sans-serif;
+}
+.header_menu > li > a {
+    text-decoration: none;
+    color: #191919;
+    -o-transition: .5s;
+    -ms-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
+
+@media (min-width: 1200px) {
+    .header_menu > ul > li {
+        padding: 19px 16px 19px;
+    }
+}
+
+.header_menu > ul > li {
+    display: inline-block;
+    padding: 19px 10px 19px;
+}
+
+header {
+    border-bottom: 1px solid #00000026;
+}
+header {
+    position: sticky;
+    background: rgba(255, 255, 255, 0.8);
+    top: 0;
+    left: 0;
+    z-index: 999;
+    height: 60px;
+    width: 100%;
+}
+
+.header_logo img {
+    height: 100%;
+    fill: #fff;
+    padding-top: 5px;
+    width: 100px;
+}

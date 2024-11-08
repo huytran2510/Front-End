@@ -1,0 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Text&display=swap');
+
+/*#root {*/
+/*  margin: 0; !* Đảm bảo không có margin mặc định *!*/
+/*  padding: 0; !* Đảm bảo không có padding mặc định *!*/
+/*}*/
+
+.App {
+  text-align: center;
+  font-family: "SF Pro Text";
+}
+@font-face {
+  font-family: 'SF Pro Text';
+  src: url(../public/SF-Pro.dmg) format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+/*html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, dl, dt, dd, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {*/
+/*  border: 0;*/
+/*  font-size: 100%;*/
+/*  margin: 0;*/
+/*  outline: 0;*/
+/*  padding: 0;*/
+/*  vertical-align: baseline;*/
+/*}*/
+
+/*.slick-dots.slick-thumb {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  padding: 10px 0;*/
+/*}*/
+
+/*.slick-dots.slick-thumb li {*/
+/*  width: auto;*/
+/*  margin: 0 5px;*/
+/*}*/
+
+/*.slick-dots.slick-thumb li img {*/
+/*  border-radius: 5px;*/
+/*  cursor: pointer;*/
+/*  opacity: 0.5;*/
+/*  transition: opacity 0.3s ease;*/
+/*}*/
+
+/*.slick-dots.slick-thumb li.slick-active img {*/
+/*  opacity: 1;*/
+/*  border: 2px solid #007bff;*/
+/*}*/
+
+/*.slick-arrow.slick-next {*/
+/*  background-color: #f6f5f7!important;*/
+/*  z-index: 9999;*/
+/*}*/
+
+/*.slick-next:before {*/
+/*  color: #007bff;*/
+/*}*/
+
+.slick-dots.slick-thumb {
+  display: flex;
+  justify-content: center; /* Center the dots */
+  padding: 10px 0;
+}
+
+.slick-dots.slick-thumb li {
+  width: auto; /* Allow auto width for the list items */
+  margin: 0 5px; /* Space between dots */
+}
+
+.custom-dot {
+  width: 30px; /* Adjust the width of the line */
+  height: 4px; /* Adjust the height of the line */
+  background-color:#ffffff; /* Change the color as needed */
+  border-radius: 2px; /* Optional: round the edges */
+  transition: background-color 0.3s ease;
+
+}
+
+/* Highlight the active dot */
+.slick-active .custom-dot {
+  background-color: #E57905 ; /* Change color for the active dot */
+}
