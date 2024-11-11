@@ -134,10 +134,8 @@ const Homepage = () => {
                         </button>
                     </div>
                 </div>
-
             </div>
             <Footer/>
-
         </>
     )
 }

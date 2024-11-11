@@ -10,6 +10,8 @@ import AssignmentView from "./page/AssignmentView";
 import Header from "./page/header/Header";
 import Footer from "./page/footer/Footer";
 import ChatRoom from "./page/chat/ChatRoom";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Menu from "./page/menu/Menu";
 
 function App() {
     const [jwt,setJwt] = useLocalStorage("","jwt")
@@ -46,7 +48,7 @@ function App() {
             <Route path={"/login"} element={<Login/>}/>
                 <Route path={"/home"} element={<Homepage/>} />
                 <Route path={"/chat"} element={<ChatRoom/>} />
-
+            <Route path="/menu" element={<Menu/>} />
         </Routes>
 
         </>
