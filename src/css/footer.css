@@ -4,14 +4,34 @@
 /*}*/
 
 .footer {
-    background-color: #333;
+    background-color: #000000D9;
+    /* padding: 20px 0; */
+    text-align: center;
+    position: relative;
+    width: 100%;
+    bottom: 0;
+    padding-top: 34px;
+    padding-bottom: 54px
 }
 
+.footer .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer p, .footer a {
+    color: inherit;
+    text-decoration: none;
+}
 .footer_linklists {
     padding: 0;
     margin: 0;
 }
-
+.footer p {
+    color: #ffffff;
+}
 .footer_title {
     font-family: 'SF Pro Text';
     font-weight: 600;
@@ -34,6 +54,8 @@ ol, ul {
     margin-bottom: 8px;
     font-size: 12px;
 }
+
+
 
 .footer_linklists li a {
     color: #ffffff;
