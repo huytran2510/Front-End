@@ -114,8 +114,11 @@ const ChatRoom = () => {
         setUserData({...userData,"username": value});
     }
 
-    const registerUser=()=>{
+    useEffect(() => {
         connect();
+    }, []);
+
+    const registerUser=()=>{
     }
     return (
         <div className="container">

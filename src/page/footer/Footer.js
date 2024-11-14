@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const Footer = () => {
     // @ts-ignore
     return (
-        <footer className="footer">
+        <footer className="footer bottom-0">
             <div className="row d-flex flex-row align-items-center justify-content-center">
                 <div className="col-lg-3 col-md-3 col-sm-6 col-xs-12 footer_col">
                     <div className="hotline_footer">
