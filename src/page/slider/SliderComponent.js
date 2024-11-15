@@ -1,6 +1,6 @@
 import React, {Component, lazy} from "react";
 import Slider from "react-slick";
-
+import "../../css/slider.css"
 const SliderComponent = ({arrImages}) => {
     const settings = {
         customPaging: function (i) {

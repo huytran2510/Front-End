@@ -21,7 +21,7 @@ const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedMainMenu, setSelectedMainMenu] = useState(null); // New state for main menu
   const [selectedTitle, setSelectedTitle] = useState(""); // New state for selected title
-
+    const [selectedCategory, setSelectedCategory] = useState(null);
   const menuItems = [
     {
       name: "Tất cả",
@@ -73,6 +73,9 @@ const Menu = () => {
       subMenu: [{ name: "Cà Phê Tại Nhà", categoryId: 14 }],
     },
   ];
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category);
+    };
   const toggleMenu = (index) => {
     if (activeMenu === index) {
       setActiveMenu(null);
@@ -87,6 +90,7 @@ const Menu = () => {
       setSelectedTitle(menuItems[index].name);
     }
   };
+  
   const toggleSubMenu = (subIndex, categoryId, subMenuName) => {
     setActiveSubMenu(subIndex);
     setSelectedCategoryId(categoryId);
@@ -117,44 +121,42 @@ const Menu = () => {
                 className={"col-lg-3 col-md-3 col-sm-12 col-xs-12 stikySidebar"}
               >
                 <aside className={"sidebar_menu"}>
-                  <ul>
-                    {menuItems.map((menu, index) => (
-                      <li key={index}>
-                        <a
-                          href="#"
-                          className={activeMenu === index ? "child_active" : ""}
-                          onClick={() => toggleMenu(index)}
-                        >
-                          {menu.name}
-                        </a>
+                    <ul>
+                        {menuItems.map((menu, index) => (
+                            <li key={index}>
+                                <a
+                                    href="#"
+                                    className={activeMenu === index ? "child_active" : ""}
+                                    onClick={() => toggleMenu(index)}
+                                >
+                                    {menu.name}
+                                </a>
 
-                        {/* Menu con */}
-                        <ul
-                          className={`sidebar_menu_lv2 ${
-                            activeMenu === index ? "show" : ""
-                          }`}
-                        >
-                          {menu.subMenu.map((item, subIndex) => (
-                            <li key={subIndex}>
-                              <a
-                                href="#"
-                                className={
-                                  activeSubMenu === subIndex
-                                    ? "child_active"
-                                    : ""
-                                }
-                                onClick={() =>
-                                  toggleSubMenu(subIndex, item.categoryId,item.name)
-                                }
-                              >
-                                {item.name}
-                              </a>
+                                {/* Submenu */}
+                                <ul
+                                    className={`sidebar_menu_lv2 ${
+                                        activeMenu === index ? "show" : ""
+                                    }`}
+                                >
+                                    {menu.subMenu.map((item, subIndex) => (
+                                        <li key={subIndex}>
+                                            <a
+                                                href="#"
+                                                className={
+                                                    activeSubMenu === subIndex ? "child_active" : ""
+                                                }
+                                                onClick={() =>
+                                                    toggleSubMenu(subIndex, item.categoryId, item.name)
+                                                }
+                                            >
+                                                {item.name}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
                             </li>
-                          ))}
-                        </ul>
-                      </li>
-                    ))}
-                  </ul>
+                        ))}
+                    </ul>
                 </aside>
               </div>
               <div
@@ -166,32 +168,28 @@ const Menu = () => {
                 <h2 className="product_section_title">{selectedTitle}</h2> {/* Title displayed here */}
                   <div className="collection_wrap wrap">
                     <div className="product_grid">
-                      {products
-                        .filter((product) => {
-                          if (selectedMainMenu) {
-                            return selectedMainMenu.includes(
-                              product.categoryId
-                            );
-                          }
-                          return (
-                            selectedCategoryId === null ||
-                            product.categoryId === selectedCategoryId
-                          );
-                        })
-                        .map((product) => (
-                          <div className="product_card" key={product.id}>
-                            <a>
-                              <img
-                                src={product.urlImage}
-                                alt={product.productName}
-                              />
-                              <a className={"product_name"}>
-                                {product.productName}
-                              </a>
-                              <p>{formatCurrency(product.unitPrice)}</p>
-                            </a>
-                          </div>
-                        ))}
+                        {products
+                            .filter((product) => {
+                                if (selectedMainMenu) {
+                                    return selectedMainMenu.includes(product.categoryId);
+                                }
+                                return (
+                                    selectedCategoryId === null ||
+                                    product.categoryId === selectedCategoryId
+                                );
+                            })
+                            .map((product) => (
+                                <div className="product_card" key={product.id}>
+                                    <a>
+                                        <img
+                                            src={product.urlImage}
+                                            alt={product.productName}
+                                        />
+                                        <a className={"product_name"}>{product.productName}</a>
+                                        <p>{formatCurrency(product.unitPrice)}</p>
+                                    </a>
+                                </div>
+                            ))}
                     </div>
                   </div>
                 </div>

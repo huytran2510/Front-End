@@ -12,6 +12,7 @@ import Footer from "./page/footer/Footer";
 import ChatRoom from "./page/chat/ChatRoom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Menu from "./page/menu/Menu";
+import ProductDetail from "./page/product/ProductDetail";
 
 function App() {
     const [jwt,setJwt] = useLocalStorage("","jwt")
@@ -49,6 +50,7 @@ function App() {
                 <Route path={"/home"} element={<Homepage/>} />
                 <Route path={"/chat"} element={<ChatRoom/>} />
             <Route path="/menu" element={<Menu/>} />
+                <Route path="/product" element={<ProductDetail/>} />
         </Routes>
 
         </>
