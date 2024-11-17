@@ -12,11 +12,54 @@
     padding-left: 20px;
 }
 .clicked{
-    border: 5px solid black;
+    border: 1px solid #E57905;
+    border-radius: 8px;
 }
-.btns{
-    height: 40px;
-    width: 40px;
-    border-radius: 5px;
-    background: grey;
-}
+
+
+  .btns {
+    position: absolute; /* Để định vị nút */
+    top: 50%; /* Đặt nút ở giữa theo chiều dọc */
+    transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+    background: none; /* Xóa màu nền */
+    border: none; /* Xóa viền */
+    cursor: pointer; /* Hiển thị con trỏ chuột khi hover */
+    opacity: 0; /* Ẩn nút ban đầu */
+    transition: opacity 0.3s; /* Hiệu ứng chuyển đổi cho độ mờ */
+  }
+
+
+
+
+.image-container {
+    position: relative; /* Để các nút có thể được định vị tương đối */
+    display: inline-block; /* Để container không chiếm toàn bộ chiều rộng */
+  }
+  
+  .image {
+    display: block; 
+  }
+  
+  .btns {
+    position: absolute; /* Để định vị nút */
+    top: 50%; /* Đặt nút ở giữa theo chiều dọc */
+    transform: translateY(-50%); /* Căn giữa theo chiều dọc */
+    opacity: 0; /* Ẩn nút ban đầu */
+    transition: opacity 0.3s; /* Hiệu ứng chuyển đổi cho độ mờ */
+  }
+  
+  .btns.left {
+    left: 10px; /* Đặt nút bên trái */
+  }
+  
+  .btns.right {
+    right: 10px; /* Đặt nút bên phải */
+  }
+  
+  .image-container:hover .btns {
+    opacity: 1; /* Hiện nút khi hover vào hình ảnh */
+  }
+  .flex_row img {
+    width: 75px;
+    height: 75px;
+  }
