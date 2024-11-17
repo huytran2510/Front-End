@@ -5,23 +5,12 @@ import RightArrow from "../../asset/right-arrow.png";
 import "../../css/slider.css"
 
 
-function CustomPaging() {
-  const imgs = [
-    {
-      id: 0,
-      value:
-        "https://product.hstatic.net/1000075078/product/1703471714_bg-vang-tra-xanh-espresso-marble_8b66b306026b44aaa6fd53f48bdf50c2.jpg",
-    },
-    {
-      id: 1,
-      value: "https://photo.znews.vn/w660/Uploaded/mdf_eioxrd/2021_07_06/2.jpg",
-    },
-    {
-      id: 2,
-      value:
-        "https://media-cdn-v2.laodong.vn/storage/newsportal/2023/8/26/1233821/Giai-Nhi-1--Nang-Tre.jpg",
-    },
-  ];
+function CustomPaging({ urlImages }) {
+  const imgs = urlImages.map((url, index) => ({
+    id: index,
+    value: url,
+  }));
+
   const [wordData, setWordData] = useState(imgs[0]);
   const [val, setVal] = useState(0);
   const handleClick = (index) => {
@@ -45,7 +34,7 @@ function CustomPaging() {
   return (
     <div className="main">
       <div className="image-container">
-        <img src={wordData.value} height="100%" width="100%" className="image" />
+        <img src={wordData.value}  className="image" />
         <button className="btns left" onClick={handlePrevious}>
           <img src={LeftArrow} />
         </button>

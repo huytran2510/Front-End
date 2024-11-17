@@ -90,7 +90,7 @@ const Menu = () => {
       setSelectedTitle(menuItems[index].name);
     }
   };
-  
+
   const toggleSubMenu = (subIndex, categoryId, subMenuName) => {
     setActiveSubMenu(subIndex);
     setSelectedCategoryId(categoryId);
@@ -180,13 +180,13 @@ const Menu = () => {
                             })
                             .map((product) => (
                                 <div className="product_card" key={product.id}>
-                                    <a>
+                                    <a href={`/product/${product.productId}`}>
                                         <img
                                             src={product.urlImage}
                                             alt={product.productName}
                                         />
-                                        <a className={"product_name"}>{product.productName}</a>
-                                        <p>{formatCurrency(product.unitPrice)}</p>
+                                        <a href={`/product/${product.productId}`} className={"product_name"}>{product.productName}</a>
+                                        <p className={"price_product_item"}>{formatCurrency(product.unitPrice)}</p>
                                     </a>
                                 </div>
                             ))}

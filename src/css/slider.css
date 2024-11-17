@@ -1,23 +1,25 @@
-.main{
+.main {
     text-align: center;
-    margin-top:30px ;
+    margin-top: 30px;
 }
-.flex_row{
+
+.flex_row {
     justify-content: center;
     display: flex;
     padding-top: 20px;
 }
 
-.thumbnail{
+.thumbnail {
     padding-left: 20px;
 }
-.clicked{
+
+.clicked {
     border: 1px solid #E57905;
     border-radius: 8px;
 }
 
 
-  .btns {
+.btns {
     position: absolute; /* Để định vị nút */
     top: 50%; /* Đặt nút ở giữa theo chiều dọc */
     transform: translateY(-50%); /* Căn giữa theo chiều dọc */
@@ -26,40 +28,43 @@
     cursor: pointer; /* Hiển thị con trỏ chuột khi hover */
     opacity: 0; /* Ẩn nút ban đầu */
     transition: opacity 0.3s; /* Hiệu ứng chuyển đổi cho độ mờ */
-  }
-
-
+}
 
 
 .image-container {
     position: relative; /* Để các nút có thể được định vị tương đối */
     display: inline-block; /* Để container không chiếm toàn bộ chiều rộng */
-  }
-  
-  .image {
-    display: block; 
-  }
-  
-  .btns {
+}
+
+.image {
+    width: 100%;
+    max-width: 480px;
+    height: auto;
+    max-height: 480px;
+    object-fit: contain;
+}
+
+.btns {
     position: absolute; /* Để định vị nút */
     top: 50%; /* Đặt nút ở giữa theo chiều dọc */
     transform: translateY(-50%); /* Căn giữa theo chiều dọc */
     opacity: 0; /* Ẩn nút ban đầu */
     transition: opacity 0.3s; /* Hiệu ứng chuyển đổi cho độ mờ */
-  }
-  
-  .btns.left {
+}
+
+.btns.left {
     left: 10px; /* Đặt nút bên trái */
-  }
-  
-  .btns.right {
+}
+
+.btns.right {
     right: 10px; /* Đặt nút bên phải */
-  }
-  
-  .image-container:hover .btns {
+}
+
+.image-container:hover .btns {
     opacity: 1; /* Hiện nút khi hover vào hình ảnh */
-  }
-  .flex_row img {
+}
+
+.flex_row img {
     width: 75px;
     height: 75px;
-  }
+}

@@ -1,40 +1,56 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import CustomPaging from "../slider/CustomPaging";
 import "../../css/product_detail.css";
 import { useState } from "react";
+import ajax from "../../ajax/fetchService";
+import {useParams} from "react-router-dom";
+import {OrbitProgress} from "react-loading-indicators";
 const ProductDetail = () => {
   const [activeSize, setActiveSize] = useState(null);
-
+  const [product,setProduct] = useState(null)
+  const [loading, setLoading] = useState(true);
+  const { id } = useParams();
+  const [selectedToppings, setSelectedToppings] = useState([]);
   const handleClick = (size) => {
     setActiveSize(size);
   };
-  const settings = {
-    customPaging: function (i) {
-      return (
-        <a>
-          <img
-            src={
-              i === 0
-                ? "https://photo.znews.vn/w660/Uploaded/mdf_eioxrd/2021_07_06/2.jpg"
-                : i === 1
-                ? "https://hoinhabaobacgiang.vn/Includes/NewsImg/1_2024/29736_7-1-1626444923.jpg"
-                : "https://d1hjkbq40fs2x4.cloudfront.net/2017-08-21/files/landscape-photography_1645-t.jpg"
-            }
-            alt={`thumbnail-${i + 1}`}
-          />
-        </a>
-      );
-    },
-    dots: true,
-    dotsClass: "slick-dots slick-thumb",
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
+
+  const handleCheckboxChange = (event) => {
+    const { id, checked } = event.target;
+
+    if (checked) {
+      // Add the topping to selectedToppings
+      setSelectedToppings([...selectedToppings, id]);
+    } else {
+      // Remove the topping from selectedToppings
+      setSelectedToppings(selectedToppings.filter((topping) => topping !== id));
+    }
   };
 
+  const [urlImages,setUrlImages] = useState([])
+  useEffect(() => {
+    if (id) {
+      ajax(`/products/${id}`, "", "GET", "")
+          .then((product) => {
+            setProduct(product);
+            setLoading(false);
+            setUrlImages(product.urlImage); // Correctly updating the state
+          })
+          .catch((err) => {
+            console.error("Error fetching product:", err);
+            setLoading(false);
+          });
+    }
+  }, [id]);
+  if (loading) {
+    return <OrbitProgress color="#32cd32" size="medium" text="" textColor="" />;
+  }
+
+  if (!product) {
+    return <p>Product not found</p>;
+  }
   return (
     <>
       <Header />
@@ -42,16 +58,16 @@ const ProductDetail = () => {
         <div className={"container product_wrap product_info_r"}>
           <div className={"col-md-6 col-lg-6"}>
             <div className="slider-container">
-              <CustomPaging />
+              <CustomPaging urlImages={urlImages} />
             </div>
           </div>
           <div className={"col-md-6 col-lg-6"}>
             <div className="m-4">
               <div class="inforr_product container">
                 <div>
-                  <p class="info_product_title">Trà Xanh Espresso Marble</p>
+                  <p class="info_product_title">{product.productName}</p>
                   <div class="info_product_price">
-                    <span class="price">49.000 đ</span>
+                    <span class="price" >{product.unitPrice}</span>
                     <del class="price_original hide">0 đ</del>
                     <span class="sale_percent hide">Giảm 0 %</span>
                   </div>
@@ -142,6 +158,7 @@ const ProductDetail = () => {
                       title="Sốt Caramel"
                       alt="10100019"
                       value="10000"
+                      onChange={handleCheckboxChange}
                     />
                     <div class="option_inner tch_top">
                       <div class="name">Sốt Caramel + 10.000 đ</div>
@@ -157,6 +174,7 @@ const ProductDetail = () => {
                       title="Shot Espresso"
                       alt="10100003"
                       value="10000"
+                      onChange={handleCheckboxChange}
                     />
                     <div class="option_inner tch_top">
                       <div class="name">Shot Espresso + 10.000 đ</div>
@@ -172,6 +190,7 @@ const ProductDetail = () => {
                       title="Trân châu trắng"
                       alt="10100016"
                       value="10000"
+                      onChange={handleCheckboxChange}
                     />
                     <div class="option_inner tch_top">
                       <div class="name">Trân châu trắng + 10.000 đ</div>
@@ -179,6 +198,13 @@ const ProductDetail = () => {
                   </label>
                 </div>
               </div>
+
+              <h4>Selected Toppings</h4>
+              <ul>
+                {selectedToppings.map((topping) => (
+                    <li key={topping}>{topping}</li>
+                ))}
+              </ul>
 
               <div class="product_to_cart">
                 <ul class="order_method">
@@ -188,7 +214,7 @@ const ProductDetail = () => {
                   >
                     <a
                       target="_blank"
-                      href="https://order.thecoffeehouse.com/?code=10010241"
+                      href=""
                     >
                       <svg
                         width="21"

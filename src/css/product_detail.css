@@ -228,3 +228,9 @@
 a {
     text-decoration: none;
 }
+
+.product_info_r .option_topping .product_options .option_item .checkbox:checked ~ .option_inner.tch_top {
+    background: #E57905;
+    border-color: #E57905;
+    color: #fff;
+}
