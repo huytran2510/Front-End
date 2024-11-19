@@ -93,34 +93,34 @@ const Login  = ()  => {
             {/*        </Col>*/}
             {/*    </Row>*/}
             <div className="container-Sign">
-            <h2>Sign in/up Form</h2>
+            <h2>Đăng Ký/Đăng Nhập</h2>
             <div className={containerClass} id="container">
                 <SignUpForm />
                 <SignInForm />
                 <div className="overlay-container">
                     <div className="overlay">
                         <div className="overlay-panel overlay-left">
-                            <h1>Welcome Back!</h1>
+                            <h1>Chào Mừng!</h1>
                             <p>
-                                To keep connected with us please login with your personal info
+                            Để duy trì kết nối với chúng tôi vui lòng đăng nhập bằng thông tin cá nhân của bạn!
                             </p>
                             <button
                                 className="ghost"
                                 id="signIn"
                                 onClick={() => handleOnClick("signIn")}
                             >
-                                Sign In
+                                Đăng Ký
                             </button>
                         </div>
                         <div className="overlay-panel overlay-right">
-                            <h1>Hello, Friend!</h1>
-                            <p>Enter your personal details and start journey with us</p>
+                            <h1>Chào Bạn!</h1>
+                            <p>Nếu bạn chưa có tài khoản chọn đăng ký!</p>
                             <button
                                 className="ghost "
                                 id="signUp"
                                 onClick={() => handleOnClick("signUp")}
                             >
-                                Sign Up
+                                Đăng Ký
                             </button>
                         </div>
                     </div>

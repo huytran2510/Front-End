@@ -1,49 +1,100 @@
-import React, {useEffect} from "react";
+import React, { useEffect } from "react";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import CustomPaging from "../slider/CustomPaging";
 import "../../css/product_detail.css";
 import { useState } from "react";
 import ajax from "../../ajax/fetchService";
-import {useParams} from "react-router-dom";
-import {OrbitProgress} from "react-loading-indicators";
+import { useParams } from "react-router-dom";
+import { OrbitProgress } from "react-loading-indicators";
+import Add from "../../asset/add.png"
+import Minus from "../../asset/minus.png"
+
 const ProductDetail = () => {
   const [activeSize, setActiveSize] = useState(null);
-  const [product,setProduct] = useState(null)
+  const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [toppings, setToppings] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [sizePrice, setSizePrice] = useState(0);
+  const [toppingPrice, setToppingPrice] = useState(0);
+  const [cart, SetCart] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+
   const { id } = useParams();
   const [selectedToppings, setSelectedToppings] = useState([]);
   const handleClick = (size) => {
     setActiveSize(size);
+    switch (size) {
+      case "Nhỏ":
+        setSizePrice(0); // Giá cơ bản
+        break;
+      case "Vừa":
+        setSizePrice(6000); // Giá cơ bản + 6000
+        break;
+      case "Lớn":
+        setSizePrice(16000); // Giá cơ bản + 12000
+        break;
+      default:
+        setSizePrice(0); // Trường hợp không chọn gì
+        break;
+    }
   };
 
   const handleCheckboxChange = (event) => {
-    const { id, checked } = event.target;
+    const { id, checked, value } = event.target;
+    const toppingPrice = parseInt(value, 10); // Giá của topping
 
     if (checked) {
-      // Add the topping to selectedToppings
-      setSelectedToppings([...selectedToppings, id]);
+      // Thêm topping vào danh sách và cập nhật tổng giá
+      setSelectedToppings((prevToppings) => [...prevToppings, id]);
+      setToppingPrice((prevToppingPrice) => prevToppingPrice + toppingPrice);
     } else {
-      // Remove the topping from selectedToppings
-      setSelectedToppings(selectedToppings.filter((topping) => topping !== id));
+      // Xóa topping khỏi danh sách và giảm tổng giá
+      setSelectedToppings((prevToppings) =>
+        prevToppings.filter((topping) => topping !== id)
+      );
+      setToppingPrice((prevToppingPrice) => prevToppingPrice - toppingPrice);
     }
   };
 
-  const [urlImages,setUrlImages] = useState([])
+  useEffect(() => {
+    setTotalPrice(sizePrice + toppingPrice);
+  }, [sizePrice, toppingPrice]);
+
+  const [urlImages, setUrlImages] = useState([]);
   useEffect(() => {
     if (id) {
       ajax(`/products/${id}`, "", "GET", "")
-          .then((product) => {
-            setProduct(product);
-            setLoading(false);
-            setUrlImages(product.urlImage); // Correctly updating the state
-          })
-          .catch((err) => {
-            console.error("Error fetching product:", err);
-            setLoading(false);
-          });
+        .then((product) => {
+          setProduct(product);
+          setLoading(false);
+          setUrlImages(product.urlImage); // Correctly updating the state
+        })
+        .catch((err) => {
+          console.error("Error fetching product:", err);
+          setLoading(false);
+        });
     }
   }, [id]);
+
+  const addToCart = () => {};
+
+  const handleIncrease = () => {
+    setQuantity((prev) => prev + 1);
+  };
+
+  const handleDecrease = () => {
+    setQuantity((prev) => (prev > 0 ? prev - 1 : 0)); // Không giảm dưới 0
+  };
+
+  const handleInputChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    if (!isNaN(value) && value >= 0) {
+      setQuantity(value);
+    }
+  };
+
   if (loading) {
     return <OrbitProgress color="#32cd32" size="medium" text="" textColor="" />;
   }
@@ -51,6 +102,15 @@ const ProductDetail = () => {
   if (!product) {
     return <p>Product not found</p>;
   }
+
+  function formatCurrency(value) {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0, // Bỏ số thập phân
+    }).format(value);
+  }
+
   return (
     <>
       <Header />
@@ -64,12 +124,14 @@ const ProductDetail = () => {
           <div className={"col-md-6 col-lg-6"}>
             <div className="m-4">
               <div class="inforr_product container">
-                <div>
-                  <p class="info_product_title">{product.productName}</p>
+                <div style={{}}>
+                  <h2 class="info_product_title">{product.productName}</h2>
                   <div class="info_product_price">
-                    <span class="price" >{product.unitPrice}</span>
-                    <del class="price_original hide">0 đ</del>
-                    <span class="sale_percent hide">Giảm 0 %</span>
+                    <span class="price">
+                      {formatCurrency(product.unitPrice + totalPrice)}
+                    </span>
+                    {/* <del class="price_original hide">0 đ</del>
+                    <span class="sale_percent hide">Giảm 0 %</span> */}
                   </div>
                 </div>
               </div>
@@ -198,24 +260,27 @@ const ProductDetail = () => {
                   </label>
                 </div>
               </div>
-
-              <h4>Selected Toppings</h4>
-              <ul>
-                {selectedToppings.map((topping) => (
-                    <li key={topping}>{topping}</li>
-                ))}
-              </ul>
-
+              <h7>Số Lượng</h7>
+              <div
+                style={{ display: "flex", alignItems: "center" }}
+              >
+                <button style={{color:"black", borderTopLeftRadius:"5px", borderBottomLeftRadius:"5px"}} onClick={handleDecrease}>-</button>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={handleInputChange}
+                  style={{ width: "100px", height:"100%", textAlign: "center" , border: "2px solid #f0f0f0",appearance: "textfield", }}
+                  min="0"
+                />
+                <button style={{color:"black", borderTopRightRadius:"5px", borderBottomRightRadius:"5px"}} onClick={handleIncrease}>+</button>
+              </div>
               <div class="product_to_cart">
                 <ul class="order_method">
                   <li
                     class="x1"
                     style={{ backgroundColor: "rgb(229, 121, 5)" }}
                   >
-                    <a
-                      target="_blank"
-                      href=""
-                    >
+                    <a target="_blank" href="">
                       <svg
                         width="21"
                         height="21"
@@ -228,7 +293,7 @@ const ProductDetail = () => {
                           fill-opacity="0.6"
                         ></path>
                       </svg>
-                      <span>Đặt giao tận nơi</span>
+                      <span>Thêm vào giỏ hàng</span>
                     </a>
                   </li>
                 </ul>

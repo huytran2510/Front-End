@@ -35,7 +35,7 @@ function SignUpForm() {
     return (
         <div className="form-container sign-up-container">
             <form onSubmit={handleOnSubmit}>
-                <h1>Create Account</h1>
+                <h1>Tạo Tài Khoản</h1>
                 <div className="social-container">
                     <a href="#" className="social">
                         <FontAwesomeIcon icon={faFacebookF} />
@@ -47,13 +47,13 @@ function SignUpForm() {
                         <FontAwesomeIcon icon={faLinkedinIn} />
                     </a>
                 </div>
-                <span>or use your email for registration</span>
+                <span>Hoặc sử dụng email để tạo tài khoản</span>
                 <input
                     type="text"
                     name="name"
                     value={state.name}
                     onChange={handleChange}
-                    placeholder="Name"
+                    placeholder="Họ Và Tên"
                 />
                 <input
                     type="email"
@@ -67,9 +67,9 @@ function SignUpForm() {
                     name="password"
                     value={state.password}
                     onChange={handleChange}
-                    placeholder="Password"
+                    placeholder="Mật Khẩu"
                 />
-                <button>Sign Up</button>
+                <button>Đăng Ký</button>
             </form>
         </div>
     );

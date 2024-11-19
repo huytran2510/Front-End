@@ -63,7 +63,7 @@ function SignInForm() {
     return (
         <div className="form-container sign-in-container">
             <form onSubmit={handleOnSubmit}>
-                <h1>Sign in</h1>
+                <h1>Đăng Nhập</h1>
                 <div className="social-container">
                     <a href="#" className="social">
                         <FontAwesomeIcon icon={faFacebookF} />
@@ -75,7 +75,7 @@ function SignInForm() {
                         <FontAwesomeIcon icon={faLinkedinIn} />
                     </a>
                 </div>
-                <span>or use your account</span>
+                <span>Hoặc sử dụng tài khoản</span>
                 <input
                     type="text"
                     placeholder="Email"
@@ -86,12 +86,12 @@ function SignInForm() {
                 <input
                     type="password"
                     name="password"
-                    placeholder="Password"
+                    placeholder="Mật Khẩu"
                     value={state.password}
                     onChange={handleChange}
                 />
-                <a href="#">Forgot your password?</a>
-                <button>Sign In</button>
+                <a href="#">Quên Mật Khẩu?</a>
+                <button>Đăng Nhập</button>
                 {errorMsg && <p className="error">{errorMsg}</p>}
             </form>
         </div>
