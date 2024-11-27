@@ -6,6 +6,7 @@ import "../../css/homepage.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "aos/dist/aos.css";
 import Aos from "aos";
+import HeaderNav from "../header/HeaderNav";
 
 const Homepage = () => {
   useEffect(() => {
@@ -27,11 +28,13 @@ const Homepage = () => {
     // flex: 1, // Đẩy footer xuống dưới khi nội dung phát triển
   };
 
+
+
   return (
     <>
-      <Header />
+      <HeaderNav />
       <div style={pageStyle}>
-        <SliderComponent style={contentStyle} arrImages={images} />
+        <SliderComponent style={contentStyle} arrImages={images} className ="main"/>
         <div className={"container d-flex flex-row flex-wrap menu-home"}>
           <div class="menu_item menu_banner">
             <a>
@@ -195,7 +198,7 @@ const Homepage = () => {
                 phì nhiêu, nguồn nước mát lành, bao bọc bởi mây và sương cùng
                 nền nhiệt độ mát mẻ quanh năm, những búp trà ở Tây Bắc mập mạp
                 và xanh mướt, hội tụ đầy đủ dưỡng chất, sinh khí, và tinh hoa
-                đất trời.  Chính khí hậu đặc trưng cùng phương pháp canh tác của
+                đất trời.Chính khí hậu đặc trưng cùng phương pháp canh tác của
                 đồng bào dân tộc nơi đây đã tạo ra Trà Xanh vị mộc dễ uống, dễ
                 yêu, không thể trộn lẫn với bất kỳ vùng miền nào khác.
               </p>

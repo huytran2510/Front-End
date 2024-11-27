@@ -15,7 +15,8 @@ const SliderComponent = ({arrImages}) => {
         dotsClass: "slick-dots slick-thumb",
         infinite: true,
         speed: 500,
-        autoplay: 1000,
+        autoplaySpeed: 3000,
+        autoplay: true,
         slidesToShow: 1,
         slidesToScroll: 1
     };
