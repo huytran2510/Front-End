@@ -7,8 +7,11 @@ import { useState } from "react";
 import ajax from "../../ajax/fetchService";
 import { useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
-import Add from "../../asset/add.png"
-import Minus from "../../asset/minus.png"
+import Add from "../../asset/add.png";
+import Minus from "../../asset/minus.png";
+import ProductReviews from "./ProductReviews";
+import FocusOnSelect from "../slider/FocusOnSelect";
+import HeaderNav from "../header/HeaderNav";
 
 const ProductDetail = () => {
   const [activeSize, setActiveSize] = useState(null);
@@ -18,11 +21,13 @@ const ProductDetail = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [sizePrice, setSizePrice] = useState(0);
   const [toppingPrice, setToppingPrice] = useState(0);
-  const [cart, SetCart] = useState([]);
+  const [cartItems, setCartItems] = useState([]);
   const [quantity, setQuantity] = useState(1);
-
+  const [productCategory, setProductCategory] = useState([]);
+  const [categoryId, setCategoryId] = useState(null);
   const { id } = useParams();
   const [selectedToppings, setSelectedToppings] = useState([]);
+  const [imageCategory, setImageCategory] = useState([]);
   const handleClick = (size) => {
     setActiveSize(size);
     switch (size) {
@@ -39,24 +44,32 @@ const ProductDetail = () => {
         setSizePrice(0); // Trường hợp không chọn gì
         break;
     }
+    console.log(activeSize)
   };
 
   const handleCheckboxChange = (event) => {
     const { id, checked, value } = event.target;
     const toppingPrice = parseInt(value, 10); // Giá của topping
-
-    if (checked) {
-      // Thêm topping vào danh sách và cập nhật tổng giá
-      setSelectedToppings((prevToppings) => [...prevToppings, id]);
-      setToppingPrice((prevToppingPrice) => prevToppingPrice + toppingPrice);
-    } else {
-      // Xóa topping khỏi danh sách và giảm tổng giá
-      setSelectedToppings((prevToppings) =>
-        prevToppings.filter((topping) => topping !== id)
-      );
-      setToppingPrice((prevToppingPrice) => prevToppingPrice - toppingPrice);
-    }
+  
+    setSelectedToppings((prevToppings) => {
+      const updatedToppings = checked
+        ? [...prevToppings, id] // Thêm topping
+        : prevToppings.filter((topping) => topping !== id); // Xóa topping
+  
+      console.log("Selected toppings:", updatedToppings); // In danh sách cập nhật
+      return updatedToppings;
+    });
+  
+    setToppingPrice((prevToppingPrice) => {
+      const updatedPrice = checked
+        ? prevToppingPrice + toppingPrice // Cộng giá
+        : prevToppingPrice - toppingPrice; // Trừ giá
+  
+      console.log("Topping price:", updatedPrice); // In giá cập nhật
+      return updatedPrice;
+    });
   };
+  
 
   useEffect(() => {
     setTotalPrice(sizePrice + toppingPrice);
@@ -70,15 +83,100 @@ const ProductDetail = () => {
           setProduct(product);
           setLoading(false);
           setUrlImages(product.urlImage); // Correctly updating the state
+          console.log("product:", product);
+          setCategoryId(product.categoryId);
         })
         .catch((err) => {
           console.error("Error fetching product:", err);
           setLoading(false);
         });
+      console.log("product category:", categoryId);
     }
   }, [id]);
 
-  const addToCart = () => {};
+  useEffect(() => {
+    if (categoryId) {
+      ajax(`/products/category/${categoryId}`, "", "GET", "")
+        .then((productCategory) => {
+          setProductCategory(productCategory);
+          setImageCategory(productCategory.urlImage); // Correctly updating the state
+          console.log("product category:", productCategory);
+          console.log("image category:", imageCategory);
+        })
+        .catch((err) => {
+          console.error("Error fetching product:", err);
+        });
+    }
+  }, [categoryId]);
+
+
+  let autoIncrementId = parseInt(localStorage.getItem("autoIncrementId")) || 1;
+  const addToCart = () => {
+    const item = {
+      id: autoIncrementId++, // Tự động tăng id
+      productId: product.productId, // id sản phẩm riêng biệt
+      name: product.productName,
+      price: product.unitPrice,
+      quantity: quantity,
+      urlImage: product.urlImage,
+      toppings: selectedToppings,
+      size: activeSize,
+      totalPrice: (product.unitPrice + selectedToppings.length * 10000 + sizePrice),
+    };
+
+    localStorage.setItem("autoIncrementId", autoIncrementId);
+
+  
+    console.log("price", item.totalPrice);
+    console.log("size", activeSize)
+  
+    // Lấy giỏ hàng hiện tại từ session storage
+    const existingCart = JSON.parse(sessionStorage.getItem("cart")) || [];
+  
+    // Kiểm tra sản phẩm đã có trong giỏ hàng chưa (so sánh cả size và toppings)
+    const index = existingCart.findIndex(
+      (cartItem) =>
+        cartItem.productId === item.productId &&
+        cartItem.size === item.size &&
+        JSON.stringify(cartItem.toppings.sort()) === JSON.stringify(item.toppings.sort())
+    );
+  
+    if (index > -1) {
+      // Nếu đã có sản phẩm cùng size và toppings, tăng số lượng
+      existingCart[index].quantity += item.quantity;
+      existingCart[index].totalPrice =
+        (existingCart[index].price + selectedToppings.length * 10000 + getSizePrice(activeSize)) *
+        existingCart[index].quantity;
+    } else {
+      // Nếu chưa, thêm sản phẩm mới
+      existingCart.push(item);
+    }
+  
+    // Lưu lại giỏ hàng vào session storage
+    sessionStorage.setItem("cart", JSON.stringify(existingCart));
+  
+    // Cập nhật trạng thái cartItems
+    setCartItems(existingCart);
+  
+    // redirect to cart
+    window.location.href = "/cart";
+  
+    console.log("Added to cart", existingCart);
+  };
+  
+  
+  // Hàm tính giá size
+  const getSizePrice = (size) => {
+    switch (size) {
+      case "vừa":
+        return 6000;
+      case "lớn":
+        return 16000;
+      default:
+        return 0; // Nhỏ
+    }
+  };
+  
 
   const handleIncrease = () => {
     setQuantity((prev) => prev + 1);
@@ -113,7 +211,7 @@ const ProductDetail = () => {
 
   return (
     <>
-      <Header />
+      <HeaderNav />
       <div className={"product_info"}>
         <div className={"container product_wrap product_info_r"}>
           <div className={"col-md-6 col-lg-6"}>
@@ -214,7 +312,7 @@ const ProductDetail = () => {
                     <input
                       type="checkbox"
                       class="checkbox"
-                      id="1116396497"
+                      id="Sốt Caramel"
                       tid="prolang"
                       name="topping_tch"
                       title="Sốt Caramel"
@@ -230,7 +328,7 @@ const ProductDetail = () => {
                     <input
                       type="checkbox"
                       class="checkbox"
-                      id="1116396490"
+                      id="Shot Espresso"
                       tid="prolang"
                       name="topping_tch"
                       title="Shot Espresso"
@@ -246,7 +344,7 @@ const ProductDetail = () => {
                     <input
                       type="checkbox"
                       class="checkbox"
-                      id="1116396494"
+                      id="Trân châu trắng"
                       tid="prolang"
                       name="topping_tch"
                       title="Trân châu trắng"
@@ -261,18 +359,40 @@ const ProductDetail = () => {
                 </div>
               </div>
               <h7>Số Lượng</h7>
-              <div
-                style={{ display: "flex", alignItems: "center" }}
-              >
-                <button style={{color:"black", borderTopLeftRadius:"5px", borderBottomLeftRadius:"5px"}} onClick={handleDecrease}>-</button>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <button
+                  style={{
+                    color: "black",
+                    borderTopLeftRadius: "5px",
+                    borderBottomLeftRadius: "5px",
+                  }}
+                  onClick={handleDecrease}
+                >
+                  -
+                </button>
                 <input
                   type="number"
                   value={quantity}
                   onChange={handleInputChange}
-                  style={{ width: "100px", height:"100%", textAlign: "center" , border: "2px solid #f0f0f0",appearance: "textfield", }}
+                  style={{
+                    width: "100px",
+                    height: "100%",
+                    textAlign: "center",
+                    border: "2px solid #f0f0f0",
+                    appearance: "textfield",
+                  }}
                   min="0"
                 />
-                <button style={{color:"black", borderTopRightRadius:"5px", borderBottomRightRadius:"5px"}} onClick={handleIncrease}>+</button>
+                <button
+                  style={{
+                    color: "black",
+                    borderTopRightRadius: "5px",
+                    borderBottomRightRadius: "5px",
+                  }}
+                  onClick={handleIncrease}
+                >
+                  +
+                </button>
               </div>
               <div class="product_to_cart">
                 <ul class="order_method">
@@ -280,7 +400,12 @@ const ProductDetail = () => {
                     class="x1"
                     style={{ backgroundColor: "rgb(229, 121, 5)" }}
                   >
-                    <a target="_blank" href="">
+                    <button
+                      target="_blank"
+                      style={{ backgroundColor: "#E57905" }}
+                      href=""
+                      onClick={addToCart}
+                    >
                       <svg
                         width="21"
                         height="21"
@@ -294,14 +419,28 @@ const ProductDetail = () => {
                         ></path>
                       </svg>
                       <span>Thêm vào giỏ hàng</span>
-                    </a>
+                    </button>
                   </li>
                 </ul>
               </div>
             </div>
           </div>
+
+          <div className="col-lg-12 col-md-12 col-sm-12 col-xs-12 product_content_bottom">
+            <hr class="hidden-xs" />
+            <div>
+              <h4 class="related_product_title">Mô tả sản phẩm</h4>
+              <p>{product.description}</p>
+            </div>
+          </div>
+          <div className="product_content_bottom">
+            <h4 class="related_product_title">Sản phẩm liên quan</h4>
+            <FocusOnSelect images={productCategory} />
+          </div>
         </div>
       </div>
+
+      <ProductReviews productId={product.productId} />
 
       <Footer />
     </>

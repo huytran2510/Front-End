@@ -60,7 +60,7 @@ const Footer = () => {
                         <li><a href="/" title="Sản phẩm">Sản phẩm</a></li>
                         <li><a href="/" title="Khuyến mãi">Khuyến mãi</a></li>
                         <li><a href="/pages/hat-ca-phe-the-coffee-house" title="Chuyện cà phê">Chuyện cà phê</a></li>
-                        <li><a href="/pages/our-stores" title="Cửa Hàng">Cửa Hàng</a></li>
+                        <li><a href="/pages/menu" title="Cửa Hàng">Cửa Hàng</a></li>
                         <li><a href="http://tuyendung.thecoffeehouse.com/" title="Tuyển dụng">Tuyển dụng</a></li>
                     </ul>
                 </div>

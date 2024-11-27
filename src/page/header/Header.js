@@ -9,7 +9,7 @@ const Header = () => {
         <header class={""} style={headerStyle}>
             <div style={header_nav}>
                 <div className={"header_logo"}>
-                    <img src={"https://static.vecteezy.com/system/resources/previews/007/655/667/non_2x/coffee-shop-logo-with-cup-line-style-isolated-on-background-for-cafe-shop-restaurant-vector.jpg"} />
+                    <img src={"https://i.pinimg.com/736x/27/87/58/278758c917eb70d151d8c4dcb4807c8a.jpg"} />
                 </div>
                 <div className={"header_menu"}>
                     <nav>

@@ -1,0 +1,51 @@
+.history-wrapper {
+    margin: auto;
+    min-height: 500px;
+    width: 450px;
+}
+
+.tch-tracking-title {
+    margin-top: 130px;
+}
+
+.text-title {
+    font-size: 28px;
+    font-weight: 600;
+}
+
+
+.card-product-note-item {
+    background: var(--white-1);
+    border: 1px solid var(--smoky-gray-4);
+    border-radius: var(--space-4);
+    display: flex
+;
+    height: var(--space-44);
+    margin-top: var(--space-20);
+}
+
+.card-product-text {
+    border: none;
+    flex: 1;
+    font-size: var(--space-16);
+    height: 100%;
+    outline: none;
+    padding: 0 var(--space-16);
+    width: 80%;
+    width: var(--space-200);
+}
+
+
+.card-product-note-icon[data-v-4be810d4] {
+    color: gray;
+    cursor: pointer;
+}
+.card-product-note-icon {
+    height: 20px;
+    margin: 12px 11px;
+    width: 18px;
+}
+
+.fa-search:before {
+    content: "\f002";
+}

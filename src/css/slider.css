@@ -33,15 +33,15 @@
 
 .image-container {
     position: relative; /* Để các nút có thể được định vị tương đối */
-    display: inline-block; /* Để container không chiếm toàn bộ chiều rộng */
+    /* display: inline-block;  */
 }
 
 .image {
     width: 100%;
-    max-width: 480px;
+    /* max-width: 480px; */
     height: auto;
     max-height: 480px;
-    object-fit: contain;
+    object-fit: cover;
 }
 
 .btns {

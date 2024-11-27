@@ -6,6 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import ajax from "../../ajax/fetchService";
 import IconChat from "../chat/IconChat";
 import ChatComponent from "../chat/ChatComponent";
+import HeaderNav from "../header/HeaderNav";
 
 function formatCurrency(value) {
   return new Intl.NumberFormat("vi-VN", {
@@ -21,7 +22,20 @@ const Menu = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [selectedMainMenu, setSelectedMainMenu] = useState(null); // New state for main menu
   const [selectedTitle, setSelectedTitle] = useState(""); // New state for selected title
-    const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [cartItem, setCartItem] = useState([]);
+  const [isCartOpen, setCartOpen] = useState(false);
+
+  // Lấy giỏ hàng từ session storage khi component mount
+  useEffect(() => {
+    const savedCart = JSON.parse(sessionStorage.getItem("cart")) || [];
+    setCartItem(savedCart);
+  }, []);
+
+  const toggleCart = () => {
+    setCartOpen(!isCartOpen);
+  };
+
   const menuItems = [
     {
       name: "Tất cả",
@@ -73,9 +87,36 @@ const Menu = () => {
       subMenu: [{ name: "Cà Phê Tại Nhà", categoryId: 14 }],
     },
   ];
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(category);
-    };
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const updateCart = (newCart) => {
+    sessionStorage.setItem("cart", JSON.stringify(newCart));
+    setCartItem(newCart);
+  };
+
+  const handleRemoveFromCart = (id) => {
+    const updatedCart = cartItem.filter((item) => item.id !== id); // Xóa sản phẩm dựa trên id
+    updateCart(updatedCart); // Cập nhật lại giỏ hàng
+  };
+
+  const handleDecreaseQuantity = (id) => {
+    const updatedCart = cartItem.map((item) =>
+      item.id === id && item.quantity > 1
+        ? { ...item, quantity: item.quantity - 1 }
+        : item
+    );
+    updateCart(updatedCart); // Cập nhật lại giỏ hàng
+  };
+
+  const handleIncreaseQuantity = (id) => {
+    const updatedCart = cartItem.map((item) =>
+      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+    );
+    updateCart(updatedCart); // Cập nhật lại giỏ hàng
+  };
+
   const toggleMenu = (index) => {
     if (activeMenu === index) {
       setActiveMenu(null);
@@ -96,7 +137,7 @@ const Menu = () => {
     setSelectedCategoryId(categoryId);
     setSelectedMainMenu(null); // Clear main menu selection when a submenu is clicked
     setSelectedTitle(subMenuName); // Set title to submenu name
-};
+  };
   const [products, setProducts] = useState([]);
   useEffect(() => {
     ajax(`/products`, "", "GET", "")
@@ -110,10 +151,20 @@ const Menu = () => {
       })
       .catch((error) => console.error("Error fetching products:", error));
   }, []);
+
+  const handleQuantityChange = (id, value) => {
+    const newQuantity = parseInt(value, 10); // Chuyển đổi giá trị nhập vào thành số
+    if (newQuantity >= 1) {
+      const updatedCart = cartItem.map((item) =>
+        item.id === id ? { ...item, quantity: newQuantity } : item
+      );
+      updateCart(updatedCart);
+    }
+  };
   return (
     <>
-      <Header />
-      <div className={"collection"}>
+      <HeaderNav />
+      <div className={"collection mt-5"}>
         <div className={"collection_menu_wrap"}>
           <div className={"container"}>
             <div className={"row"}>
@@ -121,42 +172,48 @@ const Menu = () => {
                 className={"col-lg-3 col-md-3 col-sm-12 col-xs-12 stikySidebar"}
               >
                 <aside className={"sidebar_menu"}>
-                    <ul>
-                        {menuItems.map((menu, index) => (
-                            <li key={index}>
-                                <a
-                                    href="#"
-                                    className={activeMenu === index ? "child_active" : ""}
-                                    onClick={() => toggleMenu(index)}
-                                >
-                                    {menu.name}
-                                </a>
+                  <ul>
+                    {menuItems.map((menu, index) => (
+                      <li key={index}>
+                        <a
+                          href="#"
+                          className={activeMenu === index ? "child_active" : ""}
+                          onClick={() => toggleMenu(index)}
+                        >
+                          {menu.name}
+                        </a>
 
-                                {/* Submenu */}
-                                <ul
-                                    className={`sidebar_menu_lv2 ${
-                                        activeMenu === index ? "show" : ""
-                                    }`}
-                                >
-                                    {menu.subMenu.map((item, subIndex) => (
-                                        <li key={subIndex}>
-                                            <a
-                                                href="#"
-                                                className={
-                                                    activeSubMenu === subIndex ? "child_active" : ""
-                                                }
-                                                onClick={() =>
-                                                    toggleSubMenu(subIndex, item.categoryId, item.name)
-                                                }
-                                            >
-                                                {item.name}
-                                            </a>
-                                        </li>
-                                    ))}
-                                </ul>
+                        {/* Submenu */}
+                        <ul
+                          className={`sidebar_menu_lv2 ${
+                            activeMenu === index ? "show" : ""
+                          }`}
+                        >
+                          {menu.subMenu.map((item, subIndex) => (
+                            <li key={subIndex}>
+                              <a
+                                href="#"
+                                className={
+                                  activeSubMenu === subIndex
+                                    ? "child_active"
+                                    : ""
+                                }
+                                onClick={() =>
+                                  toggleSubMenu(
+                                    subIndex,
+                                    item.categoryId,
+                                    item.name
+                                  )
+                                }
+                              >
+                                {item.name}
+                              </a>
                             </li>
-                        ))}
-                    </ul>
+                          ))}
+                        </ul>
+                      </li>
+                    ))}
+                  </ul>
                 </aside>
               </div>
               <div
@@ -165,31 +222,42 @@ const Menu = () => {
                 }
               >
                 <div className="collection_content">
-                <h2 className="product_section_title">{selectedTitle}</h2> {/* Title displayed here */}
+                  <h2 className="product_section_title">{selectedTitle}</h2>{" "}
+                  {/* Title displayed here */}
                   <div className="collection_wrap wrap">
                     <div className="product_grid">
-                        {products
-                            .filter((product) => {
-                                if (selectedMainMenu) {
-                                    return selectedMainMenu.includes(product.categoryId);
-                                }
-                                return (
-                                    selectedCategoryId === null ||
-                                    product.categoryId === selectedCategoryId
-                                );
-                            })
-                            .map((product) => (
-                                <div className="product_card" key={product.id}>
-                                    <a href={`/product/${product.productId}`}>
-                                        <img
-                                            src={product.urlImage}
-                                            alt={product.productName}
-                                        />
-                                        <a href={`/product/${product.productId}`} className={"product_name"}>{product.productName}</a>
-                                        <p className={"price_product_item"}>{formatCurrency(product.unitPrice)}</p>
-                                    </a>
-                                </div>
-                            ))}
+                      {products
+                        .filter((product) => {
+                          if (selectedMainMenu) {
+                            return selectedMainMenu.includes(
+                              product.categoryId
+                            );
+                          }
+                          return (
+                            selectedCategoryId === null ||
+                            product.categoryId === selectedCategoryId
+                          );
+                        })
+                        .map((product) => (
+                          <div className="product_card" key={product.id}>
+                            <a href={`/product/${product.productId}`}>
+                              <img
+                                src={product.urlImage}
+                                alt={product.productName}
+                              />
+                              <a
+                                href={`/product/${product.productId}`}
+                                className={"product_name"}
+                              >
+                                {product.productName}
+                              </a>
+                              <p></p>
+                              <p className={"price_product_item"}>
+                                {formatCurrency(product.unitPrice)}
+                              </p>
+                            </a>
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -199,11 +267,12 @@ const Menu = () => {
         </div>
       </div>
       <button
-        className="cart-popupstyle__CartPopupBoxButton-sc-1f54a6d-0 jkHRHZ product-cart react-draggable react-draggable-dragged"
+        className="cart-popupstyle__CartPopupBoxButton-sc-1f54a6d-0 jkHRHZ cart-popup-button product-cart react-draggable react-draggable-dragged"
         style={{ transform: "translate(-5px, -23px)" }}
+        onClick={toggleCart}
       >
         <div className="cart-popupstyle__IconContainer-sc-1f54a6d-1 hyIUDY">
-          <div className="custom-badge">0</div>
+          <div className="custom-badge">{cartItem.length}</div>
           <svg
             className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium icon css-vubbuv"
             focusable="false"
@@ -215,6 +284,57 @@ const Menu = () => {
           </svg>
         </div>
       </button>
+      <div className={`cart-sidebar ${isCartOpen ? "open" : ""}`}>
+        <button className="close-button" onClick={toggleCart}>
+          &times;
+        </button>
+        <h2>Giỏ hàng</h2>
+        <ul className="cart-items-list">
+          {cartItem.map((item) => (
+            <li key={item.id} className="cart-item">
+              <img src={item.urlImage} alt={item.name} className="item-image" />
+              <div className="item-details">
+                <p className="item-name">{item.name}</p>
+                <p style={{ fontSize: "12px", whiteSpace: "pre-line" }}>
+                  {item.toppings}
+                </p>
+                <p className="item-price">{item.price.toLocaleString()} VND</p>
+                <div className="item-quantity">
+                  <button
+                    class="value-button"
+                    id="decrease"
+                    onClick={() => handleDecreaseQuantity(item.id)}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    id="number"
+                    style={{ width: "50px" }}
+                    value={item.quantity}
+                    onChange={(e) =>
+                      handleQuantityChange(item.id, e.target.value)
+                    }
+                  />
+                  <button
+                    class="value-button"
+                    id="increase"
+                    onClick={() => handleIncreaseQuantity(item.id)}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+              <button
+                className="remove-button"
+                onClick={() => handleRemoveFromCart(item.id)}
+              >
+                Xóa
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       {/*<IconChat/>*/}
       <Footer />
     </>

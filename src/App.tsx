@@ -13,7 +13,12 @@ import ChatRoom from "./page/chat/ChatRoom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Menu from "./page/menu/Menu";
 import ProductDetail from "./page/product/ProductDetail";
-
+import ShoppingCart from "./page/product/ShoppingCart";
+import SearchBox from './page/product/SearchBox';
+import Payment from './payment/Payment';
+import { AddressProvider } from './context/AddressContext';
+import FindOrder from './page/order/FindOrder';
+import CoffeeHatRang from './page/product/CoffeeHatRang';
 function App() {
     const [jwt,setJwt] = useLocalStorage("","jwt")
     // useEffect(() => {
@@ -47,14 +52,16 @@ function App() {
                 </PrivateRoute>}/>
             <Route path="/" element={<Homepage/>}/>
             <Route path={"/login"} element={<Login/>}/>
-                <Route path={"/home"} element={<Homepage/>} />
-                <Route path={"/chat"} element={<ChatRoom/>} />
+            <Route path={"/home"} element={<Homepage/>} />
+            <Route path={"/chat"} element={<ChatRoom/>} />
             <Route path="/menu" element={<Menu/>} />
-                <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
+            <Route path="/cart" element={<ShoppingCart />} />
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/find-order" element={<FindOrder />} />
+            <Route path="/coffee" element={<CoffeeHatRang />} />
         </Routes>
-
         </>
-
     );
 }
 
