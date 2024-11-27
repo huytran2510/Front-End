@@ -215,7 +215,7 @@ const Menu = () => {
           </svg>
         </div>
       </button>
-      {/*<IconChat/>*/}
+      <IconChat/>
       <Footer />
     </>
   );

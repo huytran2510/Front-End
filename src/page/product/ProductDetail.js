@@ -7,8 +7,6 @@ import { useState } from "react";
 import ajax from "../../ajax/fetchService";
 import { useParams } from "react-router-dom";
 import { OrbitProgress } from "react-loading-indicators";
-import Add from "../../asset/add.png"
-import Minus from "../../asset/minus.png"
 
 const ProductDetail = () => {
   const [activeSize, setActiveSize] = useState(null);

@@ -13,6 +13,9 @@ import ChatRoom from "./page/chat/ChatRoom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Menu from "./page/menu/Menu";
 import ProductDetail from "./page/product/ProductDetail";
+import ChatBox from "./page/chat/ChatBox";
+import StaffChat from "./page/chat/StaffChat";
+import CustomerChat from "./page/chat/CustomerChat";
 
 function App() {
     const [jwt,setJwt] = useLocalStorage("","jwt")
@@ -51,6 +54,8 @@ function App() {
                 <Route path={"/chat"} element={<ChatRoom/>} />
             <Route path="/menu" element={<Menu/>} />
                 <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/chat-box" element={<StaffChat />} />
+                <Route path="/chat-box-customer" element={<CustomerChat />} />
         </Routes>
 
         </>
