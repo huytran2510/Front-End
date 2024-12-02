@@ -8,6 +8,9 @@ import { FaTrash } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import SearchBox from "../page/product/SearchBox";
 import HeaderNav from "../page/header/HeaderNav";
+import {Modal} from "react-bootstrap";
+import axios from "axios";
+import {Button } from 'react-bootstrap';
 
 const Payment = () => {
   const [cartItem, setCartItem] = useState([]);
@@ -23,16 +26,18 @@ const Payment = () => {
     setSelectedMethod(event.target.id); // Lưu giá trị ID của radio được chọn
   };
 
-  const handleClose = () => setShow(false);
   const handleShow = () => {
     if (!selectedMethod) {
       alert("Vui lòng chọn phương thức thanh toán!");
       return;
     }
-
     console.log("Phương thức thanh toán được chọn:", selectedMethod);
     setShow(true);
-  } 
+  }
+
+
+  const handleClose = () => setShow(false);
+
   const handleOpenPopup = () => {
     setIsPopupVisible(true);
   };
@@ -73,11 +78,12 @@ const Payment = () => {
   const handlePayment = async () => {
     try {
       const endpoint =
-        selectedMethod === "zalo"
-          ? "http://localhost:8000/payment"
-          : "http://localhost:5000/payment";
+        selectedMethod === "ZaloPay"
+          ? "http://localhost:5000/zalopay/payment"
+          : "http://localhost:5000/momo/payment";
 
       const response = await axios.post(endpoint);
+      console.log("data: ", response.data)
       if (response.data) {
         let redirectUrl = "";
   
@@ -341,7 +347,7 @@ const Payment = () => {
                     </div>
                     <div data-v-d1bcb9c8="" class="tch-order-card__right">
                       <p data-v-d1bcb9c8="" class="tch-order-card__price mb-0">
-                        75.000đ
+                        {totalPriceCart.toLocaleString()}đ
                       </p>
                     </div>
                   </div>{" "}
@@ -396,16 +402,31 @@ const Payment = () => {
                     data-v-d1bcb9c8=""
                     class="tch-order-card__text text-white f-600 mb-0"
                   >
-                    100.000đ
+                    {(totalPriceCart+25000).toLocaleString()}đ
                   </p>
                 </div>{" "}
                 <button
                   data-v-d1bcb9c8=""
                   type="button"
                   class="btn btn--white text-orange btn--radius-100"
+                  variant="contained" color="primary" onClick={handleShow}
                 >
                   Đặt hàng
                 </button>
+                <Modal show={show} onHide={handleClose} centered>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Xác nhận đặt hàng</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body>Vui lòng xác nhận đặt hàng</Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>
+                      Đóng
+                    </Button>
+                    <Button variant="primary" onClick={handlePayment}>
+                      Xác nhận
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
               </div>
             </div>
             <div className="tch-checkout-box tch-checkout-box--list-method tch-checkout-border float-lg-left">

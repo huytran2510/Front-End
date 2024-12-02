@@ -16,11 +16,13 @@ import ProductDetail from "./page/product/ProductDetail";
 import ShoppingCart from "./page/product/ShoppingCart";
 import SearchBox from './page/product/SearchBox';
 import Payment from './payment/Payment';
-import { AddressProvider } from './context/AddressContext';
+import {AddressProvider} from './context/AddressContext';
 import FindOrder from './page/order/FindOrder';
 import CoffeeHatRang from './page/product/CoffeeHatRang';
+import SuccessPage from "./payment/SuccessPage";
+
 function App() {
-    const [jwt,setJwt] = useLocalStorage("","jwt")
+    const [jwt, setJwt] = useLocalStorage("", "jwt")
     // useEffect(() => {
     //         // const reqBody = {
     //         //     "username": "test1",
@@ -42,25 +44,26 @@ function App() {
     return (
         <>
             <Routes>
-            <Route path="/dashboard" element={<PrivateRoute>
-                <Dashboard/>
-            </PrivateRoute>}/>
-            <Route
-                path={"/assignments/:id"}
-                element={<PrivateRoute>
-                    <AssignmentView/>
+                <Route path="/dashboard" element={<PrivateRoute>
+                    <Dashboard/>
                 </PrivateRoute>}/>
-            <Route path="/" element={<Homepage/>}/>
-            <Route path={"/login"} element={<Login/>}/>
-            <Route path={"/home"} element={<Homepage/>} />
-            <Route path={"/chat"} element={<ChatRoom/>} />
-            <Route path="/menu" element={<Menu/>} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<ShoppingCart />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/find-order" element={<FindOrder />} />
-            <Route path="/coffee" element={<CoffeeHatRang />} />
-        </Routes>
+                <Route
+                    path={"/assignments/:id"}
+                    element={<PrivateRoute>
+                        <AssignmentView/>
+                    </PrivateRoute>}/>
+                <Route path="/" element={<Homepage/>}/>
+                <Route path={"/login"} element={<Login/>}/>
+                <Route path={"/home"} element={<Homepage/>}/>
+                <Route path={"/chat"} element={<ChatRoom/>}/>
+                <Route path="/menu" element={<Menu/>}/>
+                <Route path="/product/:id" element={<ProductDetail/>}/>
+                <Route path="/cart" element={<ShoppingCart/>}/>
+                <Route path="/payment" element={<Payment/>}/>
+                <Route path="/find-order" element={<FindOrder/>}/>
+                <Route path="/coffee" element={<CoffeeHatRang/>}/>
+                <Route path="/success" element={<SuccessPage/>}/>
+            </Routes>
 
         </>
 
