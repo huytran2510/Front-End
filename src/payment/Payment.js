@@ -16,7 +16,23 @@ const Payment = () => {
   const [showSearchBox, setShowSearchBox] = useState(false);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState("");
+  const [show, setShow] = useState(false);
+  const [selectedMethod, setSelectedMethod] = useState("");
 
+  const handleMethodChange = (event) => {
+    setSelectedMethod(event.target.id); // Lưu giá trị ID của radio được chọn
+  };
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    if (!selectedMethod) {
+      alert("Vui lòng chọn phương thức thanh toán!");
+      return;
+    }
+
+    console.log("Phương thức thanh toán được chọn:", selectedMethod);
+    setShow(true);
+  } 
   const handleOpenPopup = () => {
     setIsPopupVisible(true);
   };
@@ -54,6 +70,42 @@ const Payment = () => {
     updateCart(updatedCart); // Cập nhật lại giỏ hàng
   };
 
+  const handlePayment = async () => {
+    try {
+      const endpoint =
+        selectedMethod === "zalo"
+          ? "http://localhost:8000/payment"
+          : "http://localhost:5000/payment";
+
+      const response = await axios.post(endpoint);
+      if (response.data) {
+        let redirectUrl = "";
+  
+        // Kiểm tra phản hồi và lấy URL thanh toán
+        if (selectedMethod === "MoMo" && response.data.payUrl) {
+          redirectUrl = response.data.payUrl;
+        } else if (selectedMethod === "ZaloPay" && response.data.order_url) {
+          redirectUrl = response.data.order_url;
+        }
+  
+        // Kiểm tra nếu có URL để chuyển hướng
+        if (redirectUrl) {
+          console.log(`Redirect URL cho ${selectedMethod}:`, redirectUrl);
+          // Chuyển hướng người dùng tới URL thanh toán
+          window.location.href = redirectUrl;
+        } else {
+          // Nếu không có URL thanh toán
+          throw new Error(`Không tìm thấy URL thanh toán cho ${selectedMethod}`);
+        }
+      } else {
+        throw new Error("Phản hồi từ API không hợp lệ.");
+      }
+    } catch (error) {
+      console.error("Lỗi khi gọi API thanh toán:", error);
+    alert(`Có lỗi xảy ra: ${error.message}`);
+    }
+  };
+
   return (
     <>
       <HeaderNav />
@@ -71,7 +123,6 @@ const Payment = () => {
               </h1>
             </div>
           </div>
-
           <div className="ml-lg--50 d-block">
             <div className="tch-checkout-box tch-checkout-box--delivery tch-checkout-border float-lg-left">
               <div className="tch-checkout-custom-mobile d-flex justify-content-between">
@@ -379,6 +430,7 @@ const Payment = () => {
                         name="payment-method"
                         id="COD"
                         class="custom-control-input"
+                        onChange={handleMethodChange}
                       />{" "}
                       <label
                         data-v-d1bcb9c8=""
@@ -410,6 +462,7 @@ const Payment = () => {
                         name="payment-method"
                         id="MoMo"
                         class="custom-control-input"
+                        onChange={handleMethodChange}
                       />{" "}
                       <label
                         data-v-d1bcb9c8=""
@@ -439,6 +492,7 @@ const Payment = () => {
                         data-v-d1bcb9c8=""
                         type="radio"
                         name="payment-method"
+                        onChange={handleMethodChange}
                         id="ZaloPay"
                         class="custom-control-input"
                       />{" "}
@@ -492,6 +546,7 @@ const Payment = () => {
                 onClose={handleClosePopup}
               />
             )}
+            {/* Modal popup comfirm order */}
           </div>
         </div>
       </div>
