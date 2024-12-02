@@ -215,7 +215,7 @@ const ProductDetail = () => {
       <div className={"product_info"}>
         <div className={"container product_wrap product_info_r"}>
           <div className={"col-md-6 col-lg-6"}>
-            <div className="slider-container">
+            <div className="">
               <CustomPaging urlImages={urlImages} />
             </div>
           </div>

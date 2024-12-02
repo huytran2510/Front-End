@@ -57,7 +57,7 @@ const Payment = () => {
   return (
     <>
       <HeaderNav />
-      <div className="container-lg container-fluid custom-checkout">
+      <div className="container-lg container-fluid custom-checkout mt-5">
         <div className="row justify-content-center">
           <div className="col-12 col-lg-10">
             <div className="tch-checkout-header mb-2">

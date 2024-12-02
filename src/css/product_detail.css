@@ -299,7 +299,9 @@ a {
 
 /* Product description */
 .product_content_bottom {
-  padding-bottom: 24px;
+  /*width: 100%;*/
+  /*padding-bottom: 24px;*/
+  object-fit: contain;
 }
 
 .product_content_bottom hr {
