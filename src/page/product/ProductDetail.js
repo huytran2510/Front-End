@@ -154,6 +154,7 @@ const ProductDetail = () => {
 
     // Lưu lại giỏ hàng vào session storage
     sessionStorage.setItem("cart", JSON.stringify(existingCart));
+    localStorage.setItem("cart", JSON.stringify(existingCart))
 
     // Cập nhật trạng thái cartItems
     setCartItems(existingCart);

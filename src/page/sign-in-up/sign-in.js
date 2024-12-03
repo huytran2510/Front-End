@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebookF, faGooglePlusG, faLinkedinIn } from "@fortawesome/free-brands-svg-icons";
+import {useLocalStorage} from "../../util/useLocalStorage";
 // import "./sign.module.css";
 
 function SignInForm() {
@@ -9,8 +10,7 @@ function SignInForm() {
         password: ""
     });
     const [errorMsg, setErrorMsg] = React.useState("");
-    const [jwt, setJwt] = React.useState("");
-
+    const [jwt,setJwt] = useLocalStorage("","jwt")
     const handleChange = (evt) => {
         const value = evt.target.value;
         setState({

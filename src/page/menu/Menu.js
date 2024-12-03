@@ -163,8 +163,8 @@ const Menu = () => {
   };
   return (
     <>
-      <Header />
-      <div className={"collection"}>
+      <HeaderNav />
+      <div className={"collection mt-5"}>
         <div className={"collection_menu_wrap"}>
           <div className={"container"}>
             <div className={"row"}>

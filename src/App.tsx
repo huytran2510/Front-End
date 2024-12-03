@@ -64,7 +64,6 @@ function App() {
                 <Route path="/coffee" element={<CoffeeHatRang/>}/>
                 <Route path="/success" element={<SuccessPage/>}/>
             </Routes>
-
         </>
 
     );
