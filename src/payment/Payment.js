@@ -79,8 +79,8 @@ const Payment = () => {
     try {
       const endpoint =
         selectedMethod === "ZaloPay"
-          ? "http://localhost:5000/zalopay/payment"
-          : "http://localhost:5000/momo/payment";
+          ? `http://localhost:5000/zalopay/payment/${totalPriceCart}`
+          : `http://localhost:5000/momo/payment/${totalPriceCart}`;
 
       const response = await axios.post(endpoint);
       console.log("data: ", response.data)
