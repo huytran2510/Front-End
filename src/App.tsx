@@ -20,27 +20,14 @@ import {AddressProvider} from './context/AddressContext';
 import FindOrder from './page/order/FindOrder';
 import CoffeeHatRang from './page/product/CoffeeHatRang';
 import SuccessPage from "./payment/SuccessPage";
+import useDataProvider from './data/dataProvider';
+import { Admin, Resource } from "react-admin";
+import { listProducts, editProduct, createProduct } from "./page/admin/products";
 
 function App() {
     const [jwt, setJwt] = useLocalStorage("", "jwt")
-    // useEffect(() => {
-    //         // const reqBody = {
-    //         //     "username": "test1",
-    //         //     "password": "test1"
-    //         // }
-    //         // fetch("api/auth/login", {
-    //         //     headers: {
-    //         //         "Content-Type": "application/json"
-    //         //     },
-    //         //     method: "post",
-    //         //     body: JSON.stringify(reqBody)
-    //         // })
-    //         //     .then((response) => Promise.all([response.json(), response.headers]))
-    //         //     .then(([body, headers]) => {
-    //         //         // @ts-ignore
-    //         //         setJwt(headers.get("authorization"));
-    //         //     });
-    // },[])
+
+    const dataProvider = useDataProvider(jwt);
     return (
         <>
             <Routes>
@@ -63,7 +50,23 @@ function App() {
                 <Route path="/find-order" element={<FindOrder/>}/>
                 <Route path="/coffee" element={<CoffeeHatRang/>}/>
                 <Route path="/success" element={<SuccessPage/>}/>
+                <Route
+                path="/admin/*"
+                element={
+                        <PrivateRoute>
+                            <Admin dataProvider={dataProvider}>
+                            <Resource
+                                name="products"
+                                list={listProducts}
+                                edit={editProduct}
+                                create={createProduct}
+                            />
+                            </Admin>
+                        </PrivateRoute>
+                    }
+            />
             </Routes>
+            
         </>
 
     );
