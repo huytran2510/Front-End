@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import './App.css';
 import {useLocalStorage} from "./util/useLocalStorage";
-import {Route, Routes} from "react-router-dom";
+import {Navigate, Route, Routes} from "react-router-dom";
 import Dashboard from "./page/dashboard";
 import Homepage from "./page/homepage/HomePage";
 import Login from "./page/sign-in-up";
@@ -20,14 +20,13 @@ import {AddressProvider} from './context/AddressContext';
 import FindOrder from './page/order/FindOrder';
 import CoffeeHatRang from './page/product/CoffeeHatRang';
 import SuccessPage from "./payment/SuccessPage";
-import useDataProvider from './data/dataProvider';
+import dataProvider from './data/dataProvider';
 import { Admin, Resource } from "react-admin";
-import { listProducts, editProduct, createProduct } from "./page/admin/products";
+import { listProducts, editProduct, CreateProduct } from "./page/admin/products";
 
 function App() {
     const [jwt, setJwt] = useLocalStorage("", "jwt")
 
-    const dataProvider = useDataProvider(jwt);
     return (
         <>
             <Routes>
@@ -39,7 +38,6 @@ function App() {
                     element={<PrivateRoute>
                         <AssignmentView/>
                     </PrivateRoute>}/>
-                <Route path="/" element={<Homepage/>}/>
                 <Route path={"/login"} element={<Login/>}/>
                 <Route path={"/home"} element={<Homepage/>}/>
                 <Route path={"/chat"} element={<ChatRoom/>}/>
@@ -51,20 +49,28 @@ function App() {
                 <Route path="/coffee" element={<CoffeeHatRang/>}/>
                 <Route path="/success" element={<SuccessPage/>}/>
                 <Route
-                path="/admin/*"
-                element={
-                        <PrivateRoute>
-                            <Admin dataProvider={dataProvider}>
+    path="/*"
+    element={
+        <PrivateRoute>
+            <Routes>
+                <Route path="/admin" element={<Navigate to="/admin/products" replace />} />
+                <Route
+                    path="*"
+                    element={
+                        <Admin dataProvider={dataProvider}>
                             <Resource
                                 name="products"
                                 list={listProducts}
                                 edit={editProduct}
-                                create={createProduct}
+                                create={CreateProduct}
                             />
-                            </Admin>
-                        </PrivateRoute>
+                        </Admin>
                     }
-            />
+                />
+            </Routes>
+        </PrivateRoute>
+    }
+/>
             </Routes>
             
         </>

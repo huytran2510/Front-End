@@ -1,109 +1,121 @@
+import {
+  fetchUtils,
+  DataProvider,
+  GetListResult,
+  GetOneResult,
+  CreateResult,
+  UpdateResult,
+  DeleteResult,
+} from "react-admin";
 import ajax from "../ajax/fetchService";
-const useDataProvider = (jwt) => {
-  const apiUrl = "/products"; // Đường dẫn API của bạn
 
-  return {
-    getList: (resource, params) => {
-      const { page, perPage } = params;
-      return ajax(
-        `${apiUrl}`, 
-        jwt, 
-        "GET", 
-        ""
-      ).then((data) => ({
-        data,
-        total: 100, // Bạn có thể tính tổng số bản ghi nếu cần
-      }));
-    },
+const apiUrl = ""; // Your API URL
+const httpClient = fetchUtils.fetchJson;
 
-    getOne: (resource, params) => {
-      return ajax(
-        `${apiUrl}/${resource}/${params.id}`, 
-        jwt, 
-        "GET", 
-        ""
-      ).then((data) => ({
-        data,
-      }));
-    },
+const dataProvider: DataProvider = {
+  getList: async (resource, params) => {
+    const page = params.pagination.page - 1; // React Admin sử dụng 1-based index
+    const size = params.pagination.perPage; // Số lượng mục trên mỗi trang
 
-    create: (resource, params) => {
-      return ajax(
-        `${apiUrl}/${resource}`, 
-        jwt, 
-        "POST", 
+    const response = await ajax(
+      `${apiUrl}/${resource}/list?page=${page}&size=${size}`,
+      null,
+      "GET"
+    );
+
+    // Đảm bảo mỗi item có id
+    const dataWithId = response.data.map((item) => ({
+      id: item.productId, // Sử dụng productId làm id
+      ...item,
+    }));
+
+    return {
+      data: dataWithId,
+      total: response.total, // Trả về tổng số sản phẩm
+    };
+  },
+
+  getOne: async (resource, params) => {
+    const response = await ajax(
+      `${apiUrl}/${resource}/${params.id}`,
+      null,
+      "GET"
+    );
+
+    // Ensure the response contains the required fields
+    if (!response.productId) {
+      console.error("Response does not contain a 'productId' key:", response);
+      throw new Error("Response does not contain a 'productId' key");
+    }
+
+    // Map `productId` to `id` to match React-Admin's expectations
+    return {
+      data: {
+        id: response.id, // React-Admin requires an 'id' field
+        ...response,
+      },
+    };
+  },
+
+  create: async (resource, params) => {
+    const data = await ajax(`${apiUrl}/${resource}`, null, "POST", params.data);
+    return { data };
+  },
+
+  update: async (resource, params) => {
+    try {
+      console.log(
+        "Sending PUT request to:",
+        `${apiUrl}/${resource}/${params.id}`
+      );
+      console.log("Request data:", params.data);
+
+      const data = await ajax(
+        `${apiUrl}/${resource}/${params.id}`,
+        null,
+        "PUT",
         params.data
-      ).then((data) => ({
-        data,
-      }));
-    },
+      );
 
-    update: (resource, params) => {
-      return ajax(
-        `${apiUrl}/${resource}/${params.id}`, 
-        jwt, 
-        "PUT", 
-        params.data
-      ).then((data) => ({
-        data,
-      }));
-    },
+      console.log("Response data:", data);
+      return { data };
+    } catch (error) {
+      console.error("Error during update operation:", error);
+      throw error; // Ném lỗi lại để hệ thống xử lý tiếp
+    }
+  },
 
-    delete: (resource, params) => {
-      return ajax(
-        `${apiUrl}/${resource}/${params.id}`, 
-        jwt, 
-        "DELETE", 
-        ""
-      ).then((data) => ({
-        data,
-      }));
-    },
+  delete: async (resource, params) => {
+    await ajax(`${apiUrl}/${resource}/${params.id}`, null, "DELETE");
+    return { data: { id: params.id } }; // Return the deleted record's ID
+  },
 
-    // Các phương thức khác nếu cần
-    getMany: (resource, params) => {
-      return ajax(
-        `${apiUrl}/${resource}?_id_in=${params.ids.join(",")}`, 
-        jwt, 
-        "GET", 
-        ""
-      ).then((data) => ({
-        data,
-      }));
-    },
+  getMany: async (resource, params) => {
+    const data = await ajax(`${apiUrl}/${resource}`, null, "POST", {
+      ids: params.ids,
+    });
+    return { data };
+  },
 
-    getManyReference: (resource, params) => {
-      return ajax(
-        `${apiUrl}/${resource}?${params.target}=${params.id}`, 
-        jwt, 
-        "GET", 
-        ""
-      ).then((data) => ({
-        data,
-        total: data.length, // Bạn có thể tính tổng tùy thuộc vào dữ liệu
-      }));
-    },
+  getManyReference: async (resource, params) => {
+    const data = await ajax(`${apiUrl}/${resource}`, null, "GET");
+    return { data, total: data.length };
+  },
 
-    updateMany: (resource, params) => {
-      return Promise.all(
-        params.ids.map((id) =>
-          ajax(`${apiUrl}/${resource}/${id}`, jwt, "PUT", params.data)
-        )
-      ).then(() => ({
-        data: params.ids,
-      }));
-    },
+  updateMany: async (resource, params) => {
+    const data = await ajax(`${apiUrl}/${resource}/bulk`, null, "PUT", {
+      ids: params.ids,
+      data: params.data,
+    });
+    return { data };
+  },
 
-    deleteMany: (resource, params) => {
-      return Promise.all(
-        params.ids.map((id) =>
-          ajax(`${apiUrl}/${resource}/${id}`, jwt, "DELETE", "")
-        )
-      ).then(() => ({
-        data: params.ids,
-      }));
-    },
-  };
+  deleteMany: async (resource, params) => {
+    await ajax(`${apiUrl}/${resource}/bulk`, null, "DELETE", {
+      ids: params.ids,
+    });
+    return { data: params.ids.map((id) => ({ id })) }; // Return the deleted IDs
+  },
 };
 
-export default useDataProvider;
+export default dataProvider;
