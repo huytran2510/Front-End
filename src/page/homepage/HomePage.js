@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import SliderComponent from "../slider/SliderComponent";
@@ -7,8 +7,21 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "aos/dist/aos.css";
 import Aos from "aos";
 import HeaderNav from "../header/HeaderNav";
+import axios from "axios";
+import CouponList from "../discount/CouponList";
 
 const Homepage = () => {
+  const [coupons, setCoupons] = useState([]);
+  useEffect(() => {
+    axios
+      .get("/api/discount")
+      .then((response) => {
+        setCoupons(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching coupons", error);
+      });
+  }, []);
   useEffect(() => {
     Aos.init();
   }, []);
@@ -28,13 +41,19 @@ const Homepage = () => {
     // flex: 1, // Đẩy footer xuống dưới khi nội dung phát triển
   };
 
-
-
   return (
     <>
       <HeaderNav />
       <div style={pageStyle}>
-        <SliderComponent style={contentStyle} arrImages={images} className ="main"/>
+        <SliderComponent
+          style={contentStyle}
+          arrImages={images}
+          className="main"
+        />
+        <div>
+          
+          <CouponList coupons={coupons} />
+        </div>
         <div className={"container d-flex flex-row flex-wrap menu-home"}>
           <div class="menu_item menu_banner">
             <a>

@@ -60,6 +60,7 @@ function App() {
                         <Admin dataProvider={dataProvider}>
                             <Resource
                                 name="products"
+                                options={{ label: "Sản Phẩm" }}
                                 list={listProducts}
                                 edit={editProduct}
                                 create={CreateProduct}

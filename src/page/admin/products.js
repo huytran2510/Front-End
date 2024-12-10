@@ -57,45 +57,50 @@ export const CreateProduct = (props) => {
 
   const handleSubmit = async (values) => {
     const formData = new FormData();
-  
-    // Thêm thông tin sản phẩm vào FormData dưới dạng JSON
+    if (values && values.hasOwnProperty("productName")) {
+      formData.append("productName", values.productName);
+    }
+    // Thêm thông tin sản phẩm dưới dạng JSON
     formData.append(
-      "product",
-      new Blob([JSON.stringify({
-        productId: values.productId,
-        productName: values.productName,
-        unitPrice: values.unitPrice,
-        unitsInStock: values.unitsInStock,
-        discontinued: values.discontinued,
-        categoryId: values.categoryId
-      })], { type: "application/json" })
+      "productDTO",
+      new Blob(
+        [
+          JSON.stringify({
+            productName: values.productName,
+            unitPrice: values.unitPrice,
+            unitsInStock: values.unitsInStock,
+            discontinued: values.discontinued,
+          }),
+        ],
+        { type: "application/json" }
+      )
     );
   
-    // Thêm ảnh vào FormData
+    // Thêm file ảnh
     if (values.urlImage && values.urlImage.length > 0) {
-      for (let i = 0; i < values.urlImage.length; i++) {
-        formData.append("images", values.urlImage[i]);
-      }
+      values.urlImage.forEach((file) => {
+        formData.append("images", file.raw); // file.raw là file gốc từ input
+      });
     }
   
     try {
-      // Gửi yêu cầu tạo sản phẩm bằng fetch
       const response = await fetch("/products", {
         method: "POST",
-        body: formData,
+        body: formData, // Chỉ gửi formData, không tự đặt header Content-Type
       });
   
       if (!response.ok) {
-        throw new Error("Network response was not ok");
+        throw new Error("Failed to create product");
       }
   
       const data = await response.json();
-      console.log("Created product:", data);
-      notify("Product created successfully");
-      redirect("list", "products"); // Chuyển hướng đến danh sách sản phẩm
+      console.log("Product created:", data);
+  
+      notify("Product created successfully!");
+      redirect("list", "products");
     } catch (error) {
-      notify("Error creating product", "warning");
       console.error("Error:", error);
+      notify(`Error: ${error.message}`, { type: "warning" });
     }
   };
   
@@ -103,13 +108,17 @@ export const CreateProduct = (props) => {
   return (
     <Create {...props}>
       <SimpleForm save={handleSubmit}>
-        <TextInput source="productName" label="Tên" />
+        <TextInput source="productName" label="Tên sản phẩm" />
         <NumberInput source="unitPrice" label="Giá" />
         <NumberInput source="unitsInStock" label="Số lượng tồn kho" />
-        <BooleanInput source="discontinued" label="Hoạt động" />
-        <NumberInput source="categoryId" label="Category ID" />
-        {/* File input for image */}
-        <FileInput source="urlImage" label="Image" accept="image/*" multiple>
+        <BooleanInput source="discontinued" label="Ngừng bán" />
+        <NumberInput source="categoryId" label="ID Danh mục" />
+        <FileInput
+          source="urlImage"
+          label="Ảnh sản phẩm"
+          accept="image/*"
+          multiple
+        >
           <FileField source="src" title="title" />
         </FileInput>
       </SimpleForm>
